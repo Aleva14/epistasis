@@ -1,0 +1,1346 @@
+NO.             1
+***** Sequence and structural information*****
+PROTEIN         Phospholipase A2
+SOURCE          Bovine
+LENGTH          130
+MOL-WEIGHT      14536.12
+PIR_ID          PSBOA
+SWISSPROT_ID    PA21_BOVIN (P00593)
+E.C.NUMBER      EC 3.4.23.4
+PMD.NO          A930651
+PDB_wild        1BP2
+PDB_mutant      
+MUTATION        wild
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        
+ASA             
+***** Experimental condition *****
+T               30.0
+pH              8.0
+BUFFER_NAME     borate
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES       EDTA (0.1 mM),
+PROTEIN_CONC    5 mM
+MEASURE         CD
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          9.50
+ddG_H2O         
+dG
+ddG
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               1.47
+Cm              6.90
+dCp             
+STATE           
+REVERSIBILITY   Unknown
+ACTIVITY
+ACTIVITY_Km     1.4
+ACTIVITY_Kcat   675
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       catalytic triad; PLA2; conformational stability; structural role
+REFERENCE       J AM CHEM SOC  115,     8523-8526 (1993) PMID:
+AUTHOR          Li Y. & Tsai M.-D.
+REMARKS         additive : EDTA(0.1 mM),
+RELATED_ENTRIES  2,3,4,
+//
+NO.             2
+***** Sequence and structural information*****
+PROTEIN         Phospholipase A2
+SOURCE          Bovine
+LENGTH          130
+MOL-WEIGHT      14513.08
+PIR_ID          PSBOA
+SWISSPROT_ID    PA21_BOVIN (P00593)
+E.C.NUMBER      EC 3.4.23.4
+PMD.NO          A930651
+PDB_wild        1BP2
+PDB_mutant      
+MUTATION        H 48 N
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Helix
+ASA             17.1
+***** Experimental condition *****
+T               30.0
+pH              8.00
+BUFFER_NAME     borate
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES       EDTA (0.1 mM),
+PROTEIN_CONC    5 mM
+MEASURE         CD
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          6.50
+ddG_H2O         -3.00
+dG
+ddG
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               1.20
+Cm              5.40
+dCp             
+STATE           
+REVERSIBILITY   Unknown
+ACTIVITY
+ACTIVITY_Km     2.6
+ACTIVITY_Kcat   0.04
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       catalytic triad; PLA2; conformational stability; structural role
+REFERENCE       J AM CHEM SOC  115,     8523-8526 (1993) PMID:
+AUTHOR          Li Y. & Tsai M.-D.
+REMARKS         additive : EDTA(0.1 mM),
+RELATED_ENTRIES  1,3,4,
+//
+NO.             3
+***** Sequence and structural information*****
+PROTEIN         Phospholipase A2
+SOURCE          Bovine
+LENGTH          130
+MOL-WEIGHT      14527.11
+PIR_ID          PSBOA
+SWISSPROT_ID    PA21_BOVIN (P00593)
+E.C.NUMBER      EC 3.4.23.4
+PMD.NO          A930651
+PDB_wild        1BP2
+PDB_mutant      
+MUTATION        H 48 Q
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Helix
+ASA             17.1
+***** Experimental condition *****
+T               30.0
+pH              8.00
+BUFFER_NAME     borate
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES       EDTA (0.1 mM),
+PROTEIN_CONC    5 mM
+MEASURE         CD
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          8.90
+ddG_H2O         -0.60
+dG
+ddG
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               1.34
+Cm              6.60
+dCp             
+STATE           
+REVERSIBILITY   Unknown
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   undetectable (<0.001)
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       catalytic triad; PLA2; conformational stability; structural role
+REFERENCE       J AM CHEM SOC  115,     8523-8526 (1993) PMID:
+AUTHOR          Li Y. & Tsai M.-D.
+REMARKS         additive : EDTA(0.1 mM),
+RELATED_ENTRIES  1,2,4,
+//
+NO.             4
+***** Sequence and structural information*****
+PROTEIN         Phospholipase A2
+SOURCE          Bovine
+LENGTH          130
+MOL-WEIGHT      14470.06
+PIR_ID          PSBOA
+SWISSPROT_ID    PA21_BOVIN (P00593)
+E.C.NUMBER      EC 3.4.23.4
+PMD.NO          A930651
+PDB_wild        1BP2
+PDB_mutant      
+MUTATION        H 48 A
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Helix
+ASA             17.1
+***** Experimental condition *****
+T               30.0
+pH              8.00
+BUFFER_NAME     borate
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES       EDTA (0.1 mM),
+PROTEIN_CONC    5 mM
+MEASURE         CD
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          6.40
+ddG_H2O         -3.10
+dG
+ddG
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               1.02
+Cm              6.30
+dCp             
+STATE           
+REVERSIBILITY   Unknown
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   undetectable (<0.001)
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       catalytic triad; PLA2; conformational stability; structural role
+REFERENCE       J AM CHEM SOC  115,     8523-8526 (1993) PMID:
+AUTHOR          Li Y. & Tsai M.-D.
+REMARKS         additive : EDTA(0.1 mM),
+RELATED_ENTRIES  1,2,3,
+//
+NO.             5
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17597.00
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      
+MUTATION        wild
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        
+ASA             
+***** Experimental condition *****
+T
+pH              3.00
+BUFFER_NAME     glycine-HCl
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              49.8
+dTm             0.0
+dHvH            98.1
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        100
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         
+RELATED_ENTRIES  6,7,8,9,10,11,12,13,14,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             6
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17597.00
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      
+MUTATION        wild
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        
+ASA             
+***** Experimental condition *****
+T
+pH              5.50
+BUFFER_NAME     Sodium acetate
+BUFFER_CONC     20 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              52.0
+dTm             0.0
+dHvH            89.0
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        100
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         
+RELATED_ENTRIES  5,7,8,9,10,11,12,13,14,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             7
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17625.02
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      
+MUTATION        K 91 R
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Coil
+ASA             80.5
+***** Experimental condition *****
+T
+pH              3.00
+BUFFER_NAME     glycine-HCl
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              49.8
+dTm             0.5
+dHvH            119.1
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        95
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,8,9,10,11,12,13,14,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             8
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17625.02
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      
+MUTATION        K 91 R
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Coil
+ASA             80.5
+***** Experimental condition *****
+T
+pH              5.50
+BUFFER_NAME     Sodium acetate
+BUFFER_CONC     20 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              52.0
+dTm             0.1
+dHvH            96.2
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        95%
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,7,9,10,11,12,13,14,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             9
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17611.02
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      
+MUTATION        D 94 E
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Coil
+ASA             99.6
+***** Experimental condition *****
+T
+pH              3.00
+BUFFER_NAME     glycine-HCl
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              49.8
+dTm             -1.2
+dHvH            95.9
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        100%
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,7,8,10,11,12,13,14,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             10
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17611.02
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      
+MUTATION        D 94 E
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Coil
+ASA             99.6
+***** Experimental condition *****
+T
+pH              5.50
+BUFFER_NAME     Sodium acetate
+BUFFER_CONC     20 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              52.0
+dTm             -1.6
+dHvH            92.9
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        100%
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,7,8,9,11,12,13,14,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             11
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17525.88
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      1RBT
+MUTATION        K 95 G
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Coil
+ASA             137.0
+***** Experimental condition *****
+T
+pH              3.00
+BUFFER_NAME     glycine-HCl
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              49.8
+dTm             5.7
+dHvH            102.4
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        120%
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,7,8,9,10,12,13,14,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             12
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17525.88
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      1RBT
+MUTATION        K 95 G
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Coil
+ASA             137.0
+***** Experimental condition *****
+T
+pH              5.50
+BUFFER_NAME     Sodium acetate
+BUFFER_CONC     20 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              52.0
+dTm             6.8
+dHvH            90.4
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        120%
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,7,8,9,10,11,13,14,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             13
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17539.91
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      1RBV
+MUTATION        K 95 A
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Coil
+ASA             137.0
+***** Experimental condition *****
+T
+pH              3.00
+BUFFER_NAME     glycine-HCl
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              49.8
+dTm             0.3
+dHvH            114.2
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        95%
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,7,8,9,10,11,12,14,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             14
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17539.91
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      1RBV
+MUTATION        K 95 A
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Coil
+ASA             137.0
+***** Experimental condition *****
+T
+pH              5.50
+BUFFER_NAME     Sodium acetate
+BUFFER_CONC     20 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              52.0
+dTm             0.4
+dHvH            96.4
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        95%
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,7,8,9,10,11,12,13,15,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             15
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17582.93
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      1RBU
+MUTATION        K 95 N
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Turn
+ASA             137.0
+***** Experimental condition *****
+T
+pH              3.00
+BUFFER_NAME     glycine-HCl
+BUFFER_CONC     10 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              49.8
+dTm             2.9
+dHvH            108.7
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        90%
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,7,8,9,10,11,12,13,14,16,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             16
+***** Sequence and structural information*****
+PROTEIN         Ribonuclease HI
+SOURCE          Escherichia coli
+LENGTH          155
+MOL-WEIGHT      17582.93
+PIR_ID          NRECH
+SWISSPROT_ID    RNH_ECOLI (P0A7Y4)
+E.C.NUMBER      EC 3.1.4.8
+PMD.NO          A920875
+PDB_wild        2RN2
+PDB_mutant      1RBU
+MUTATION        K 95 N
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Turn
+ASA             137.0
+***** Experimental condition *****
+T
+pH              5.50
+BUFFER_NAME     Sodium acetate
+BUFFER_CONC     20 mM
+ION_NAME_1      
+ION_CONC_1      
+ADDITIVES
+PROTEIN_CONC    
+MEASURE         CD
+METHOD          Thermal
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG
+ddG
+Tm              52.0
+dTm             3.2
+dHvH            90.0
+dHcal           
+m               
+Cm              
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY        90%
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       structural stability; mutagenesis; free energy change;
+                thermostabilization; Escherichia coli ribonuclease HI
+REFERENCE       J BIOL CHEM  267,   22014-22017 (1992) PMID: 1331044
+AUTHOR          Kimura S., Kanaya S. & Nakamura H.
+REMARKS         T is the temperature (Tm) of wild type at which ddG was measured
+RELATED_ENTRIES  5,6,7,8,9,10,11,12,13,14,15,2143,2144,2145,2146,2147,2148,13174,13175,13176,13177,13178,13179,13180,13181,13182,13183,13939,13940,13941,13942,13943,13944,
+//
+NO.             17
+***** Sequence and structural information*****
+PROTEIN         Interleukin 1 beta
+SOURCE          Human
+LENGTH          269
+MOL-WEIGHT      30748.00
+PIR_ID          ICHU1B
+SWISSPROT_ID    IL1B_HUMAN (P01584)
+E.C.NUMBER      
+PMD.NO          A931451
+PDB_wild        1IOB
+PDB_mutant      
+MUTATION        wild
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        
+ASA             
+***** Experimental condition *****
+T               25.0
+pH              6.50
+BUFFER_NAME     MES
+BUFFER_CONC     10 mM
+ION_NAME_1      NaCl
+ION_CONC_1      90 mM
+ADDITIVES       EDTA (2 mM),
+PROTEIN_CONC    
+MEASURE         Fluorescence
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          9.10
+ddG_H2O         
+dG              9.10
+ddG             0.0
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               
+Cm              1.35
+dCp             
+STATE           
+REVERSIBILITY   no
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       human interleukin-1 beta; protein stability; thermal stability;
+                inclusion body formation; folding intermediate
+REFERENCE       J BIOL CHEM  268,   18053-18061 (1993) PMID: 8394358
+AUTHOR          Chrunyk B.A., Evans J., Lillquist J., Young P. & Wetzel R.
+REMARKS         additive : EDTA(2 mM),dG and ddG were measured in the presence of 1.35M GdnHCl
+RELATED_ENTRIES  18,19,20,21,22,23,24,
+//
+NO.             18
+***** Sequence and structural information*****
+PROTEIN         Interleukin 1 beta
+SOURCE          Human
+LENGTH          269
+MOL-WEIGHT      30717.98
+PIR_ID          ICHU1B
+SWISSPROT_ID    IL1B_HUMAN (P01584)
+E.C.NUMBER      
+PMD.NO          A931451
+PDB_wild        1IOB
+PDB_mutant      
+MUTATION        T 9 A
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Sheet
+ASA             5.4
+***** Experimental condition *****
+T               25.0
+pH              6.50
+BUFFER_NAME     MES
+BUFFER_CONC     10 mM
+ION_NAME_1      NaCl
+ION_CONC_1      90 mM
+ADDITIVES       EDTA (2 mM),
+PROTEIN_CONC    
+MEASURE         Fluorescence
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          7.00
+ddG_H2O         -2.10
+dG              8.3
+ddG             -0.8
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               
+Cm              1.10
+dCp             
+STATE           
+REVERSIBILITY   no
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       human interleukin-1 beta; protein stability; thermal stability;
+                inclusion body formation; folding intermediate
+REFERENCE       J BIOL CHEM  268,   18053-18061 (1993) PMID: 8394358
+AUTHOR          Chrunyk B.A., Evans J., Lillquist J., Young P. & Wetzel R.
+REMARKS         additive : EDTA(2 mM),dG and ddG were measured in the presence of 1.35M GdnHCl
+RELATED_ENTRIES  17,19,20,21,22,23,24,
+//
+NO.             19
+***** Sequence and structural information*****
+PROTEIN         Interleukin 1 beta
+SOURCE          Human
+LENGTH          269
+MOL-WEIGHT      30760.06
+PIR_ID          ICHU1B
+SWISSPROT_ID    IL1B_HUMAN (P01584)
+E.C.NUMBER      
+PMD.NO          A931451
+PDB_wild        1IOB
+PDB_mutant      
+MUTATION        T 9 L
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Sheet
+ASA             5.4
+***** Experimental condition *****
+T               25.0
+pH              6.50
+BUFFER_NAME     MES
+BUFFER_CONC     10 mM
+ION_NAME_1      NaCl
+ION_CONC_1      90 mM
+ADDITIVES       EDTA (2 mM),
+PROTEIN_CONC    
+MEASURE         Fluorescence
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          6.00
+ddG_H2O         -3.10
+dG              8.4
+ddG             -0.7
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               
+Cm              1.20
+dCp             
+STATE           
+REVERSIBILITY   no
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       human interleukin-1 beta; protein stability; thermal stability;
+                inclusion body formation; folding intermediate
+REFERENCE       J BIOL CHEM  268,   18053-18061 (1993) PMID: 8394358
+AUTHOR          Chrunyk B.A., Evans J., Lillquist J., Young P. & Wetzel R.
+REMARKS         additive : EDTA(2 mM),dG and ddG were measured in the presence of 1.35M GdnHCl
+RELATED_ENTRIES  17,18,20,21,22,23,24,
+//
+NO.             20
+***** Sequence and structural information*****
+PROTEIN         Interleukin 1 beta
+SOURCE          Human
+LENGTH          269
+MOL-WEIGHT      30775.03
+PIR_ID          ICHU1B
+SWISSPROT_ID    IL1B_HUMAN (P01584)
+E.C.NUMBER      
+PMD.NO          A931451
+PDB_wild        1IOB
+PDB_mutant      
+MUTATION        T 9 Q
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Sheet
+ASA             5.4
+***** Experimental condition *****
+T               25.0
+pH              6.50
+BUFFER_NAME     MES
+BUFFER_CONC     10 mM
+ION_NAME_1      NaCl
+ION_CONC_1      90 mM
+ADDITIVES       EDTA (2 mM),
+PROTEIN_CONC    
+MEASURE         Fluorescence
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          6.30
+ddG_H2O         -2.80
+dG              7.2
+ddG             -1.9
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               
+Cm              1.00
+dCp             
+STATE           
+REVERSIBILITY   no
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       human interleukin-1 beta; protein stability; thermal stability;
+                inclusion body formation; folding intermediate
+REFERENCE       J BIOL CHEM  268,   18053-18061 (1993) PMID: 8394358
+AUTHOR          Chrunyk B.A., Evans J., Lillquist J., Young P. & Wetzel R.
+REMARKS         additive : EDTA(2 mM),dG and ddG were measured in the presence of 1.35M GdnHCl
+RELATED_ENTRIES  17,18,19,21,22,23,24,
+//
+NO.             21
+***** Sequence and structural information*****
+PROTEIN         Interleukin 1 beta
+SOURCE          Human
+LENGTH          269
+MOL-WEIGHT      30703.95
+PIR_ID          ICHU1B
+SWISSPROT_ID    IL1B_HUMAN (P01584)
+E.C.NUMBER      
+PMD.NO          A931451
+PDB_wild        1IOB
+PDB_mutant      1HIB
+MUTATION        T 9 G
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Sheet
+ASA             5.4
+***** Experimental condition *****
+T               25.0
+pH              6.50
+BUFFER_NAME     MES
+BUFFER_CONC     10 mM
+ION_NAME_1      NaCl
+ION_CONC_1      90 mM
+ADDITIVES       EDTA (2 mM),
+PROTEIN_CONC    
+MEASURE         Fluorescence
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          5.40
+ddG_H2O         -3.70
+dG              6.5
+ddG             -2.6
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               
+Cm              0.90
+dCp             
+STATE           
+REVERSIBILITY   no
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       human interleukin-1 beta; protein stability; thermal stability;
+                inclusion body formation; folding intermediate
+REFERENCE       J BIOL CHEM  268,   18053-18061 (1993) PMID: 8394358
+AUTHOR          Chrunyk B.A., Evans J., Lillquist J., Young P. & Wetzel R.
+REMARKS         additive : EDTA(2 mM),dG and ddG were measured in the presence of 1.35M GdnHCl
+RELATED_ENTRIES  17,18,19,20,22,23,24,
+//
+NO.             22
+***** Sequence and structural information*****
+PROTEIN         Interleukin 1 beta
+SOURCE          Human
+LENGTH          269
+MOL-WEIGHT      30776.02
+PIR_ID          ICHU1B
+SWISSPROT_ID    IL1B_HUMAN (P01584)
+E.C.NUMBER      
+PMD.NO          A931451
+PDB_wild        1IOB
+PDB_mutant      
+MUTATION        K 97 R
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Helix
+ASA             91.5
+***** Experimental condition *****
+T               25.0
+pH              6.50
+BUFFER_NAME     MES
+BUFFER_CONC     10 mM
+ION_NAME_1      NaCl
+ION_CONC_1      90 mM
+ADDITIVES       EDTA (2 mM),
+PROTEIN_CONC    
+MEASURE         Fluorescence
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          6.00
+ddG_H2O         -3.10
+dG              8.6
+ddG             -0.5
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               
+Cm              1.20
+dCp             
+STATE           
+REVERSIBILITY   no
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       human interleukin-1 beta; protein stability; thermal stability;
+                inclusion body formation; folding intermediate
+REFERENCE       J BIOL CHEM  268,   18053-18061 (1993) PMID: 8394358
+AUTHOR          Chrunyk B.A., Evans J., Lillquist J., Young P. & Wetzel R.
+REMARKS         additive : EDTA(2 mM),dG and ddG were measured in the presence of 1.35M GdnHCl
+RELATED_ENTRIES  17,18,19,20,21,23,24,
+//
+NO.             23
+***** Sequence and structural information*****
+PROTEIN         Interleukin 1 beta
+SOURCE          Human
+LENGTH          269
+MOL-WEIGHT      30676.88
+PIR_ID          ICHU1B
+SWISSPROT_ID    IL1B_HUMAN (P01584)
+E.C.NUMBER      
+PMD.NO          A931451
+PDB_wild        1IOB
+PDB_mutant      
+MUTATION        K 97 G
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Helix
+ASA             91.5
+***** Experimental condition *****
+T               25.0
+pH              6.50
+BUFFER_NAME     MES
+BUFFER_CONC     10 mM
+ION_NAME_1      NaCl
+ION_CONC_1      90 mM
+ADDITIVES       EDTA (2 mM),
+PROTEIN_CONC    
+MEASURE         Fluorescence
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          7.00
+ddG_H2O         -2.10
+dG              7.9
+ddG             -1.2
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               
+Cm              1.10
+dCp             
+STATE           
+REVERSIBILITY   no
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       human interleukin-1 beta; protein stability; thermal stability;
+                inclusion body formation; folding intermediate
+REFERENCE       J BIOL CHEM  268,   18053-18061 (1993) PMID: 8394358
+AUTHOR          Chrunyk B.A., Evans J., Lillquist J., Young P. & Wetzel R.
+REMARKS         additive : EDTA(2 mM),dG and ddG were measured in the presence of 1.35M GdnHCl
+RELATED_ENTRIES  17,18,19,20,21,22,24,
+//
+NO.             24
+***** Sequence and structural information*****
+PROTEIN         Interleukin 1 beta
+SOURCE          Human
+LENGTH          269
+MOL-WEIGHT      30718.96
+PIR_ID          ICHU1B
+SWISSPROT_ID    IL1B_HUMAN (P01584)
+E.C.NUMBER      
+PMD.NO          A931451
+PDB_wild        1IOB
+PDB_mutant      
+MUTATION        K 97 V
+MUTATED_CHAIN   -
+NO_MOLECULE     1
+SEC.STR.        Helix
+ASA             91.5
+***** Experimental condition *****
+T               25.0
+pH              6.50
+BUFFER_NAME     MES
+BUFFER_CONC     10 mM
+ION_NAME_1      NaCl
+ION_CONC_1      90 mM
+ADDITIVES       EDTA (2 mM),
+PROTEIN_CONC    
+MEASURE         Fluorescence
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          10.60
+ddG_H2O         1.50
+dG              9.9
+ddG             0.8
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               
+Cm              1.40
+dCp             
+STATE           
+REVERSIBILITY   no
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       human interleukin-1 beta; protein stability; thermal stability;
+                inclusion body formation; folding intermediate
+REFERENCE       J BIOL CHEM  268,   18053-18061 (1993) PMID: 8394358
+AUTHOR          Chrunyk B.A., Evans J., Lillquist J., Young P. & Wetzel R.
+REMARKS         additive : EDTA(2 mM),dG and ddG were measured in the presence of 1.35M GdnHCl
+RELATED_ENTRIES  17,18,19,20,21,22,23,
+//
+NO.             25
+***** Sequence and structural information*****
+PROTEIN         Gene V
+SOURCE          Bacteriophage f1
+LENGTH          87
+MOL-WEIGHT      9688.00
+PIR_ID          DDBPF1
+SWISSPROT_ID    G5P_BPFD (P69542)
+E.C.NUMBER      EC  3.2.1.3
+PMD.NO          A910849
+PDB_wild        1VQB
+PDB_mutant      
+MUTATION        wild
+MUTATED_CHAIN   -
+NO_MOLECULE     2
+SEC.STR.        
+ASA             
+***** Experimental condition *****
+T               25.0
+pH              7.00
+BUFFER_NAME     MOPS
+BUFFER_CONC     50 mM
+ION_NAME_1      NaCl
+ION_CONC_1      100 mM
+ADDITIVES       EDTA (1 mM),
+PROTEIN_CONC    10 micro M
+MEASURE         CD
+METHOD          GdnHCl
+***** Thermodynamic data *****
+dG_H2O          
+ddG_H2O         
+dG              9.0
+ddG             0.0
+Tm              
+dTm             
+dHvH            
+dHcal           
+m               3.6
+Cm              2.61
+dCp             
+STATE           
+REVERSIBILITY   yes
+ACTIVITY
+ACTIVITY_Km     
+ACTIVITY_Kcat   
+ACTIVITY_Kd     
+***** Literature *****
+KEY_WORDS       protein stability; mutagenesis; thermostability; aggregation;
+                protein-nucleic acid interactions
+REFERENCE       J MOL BIOL  219,       257-275 (1991) PMID: 2038057
+AUTHOR          Zabin H.B. & Terwilliger T.C.
+REMARKS         additive : EDTA(1 mM),
+RELATED_ENTRIES  26,27,28,29,30,31,32,33,34,35,36,37,
+//
