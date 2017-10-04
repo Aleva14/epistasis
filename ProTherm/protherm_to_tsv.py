@@ -10,7 +10,7 @@ properties = ("NO.", "PROTEIN",  "MUTATION", "MUTATED_CHAIN", "ddG", "ddG_H2O", 
 def open_database(argv):
     print(argv)
     try:
-        database = open(argv[1], 'r')
+        database = open(argv[1], 'r', errors = 'replace')
         return database
     except IndexError:
         print("Usage: python3 protherm_to_tsv.py input (output)")
@@ -29,7 +29,7 @@ def open_output(argv):
         return output
     except IOError:
         print("Could not open file: ", output_name)
-
+        sys.exit(1)
 
 def read_block(database):
     global properties
