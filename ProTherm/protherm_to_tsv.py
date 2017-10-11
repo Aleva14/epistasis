@@ -1,4 +1,5 @@
 import sys
+import re
 
 properties = ("NO.", "PROTEIN",  "MUTATION", "MUTATED_CHAIN", "ddG", "ddG_H2O", "PDB_wild", "PDB_mutant",  "T", "pH",
         "SOURCE", "LENGTH", "MOL-WEIGHT", "PIR_ID", "SWISSPROT_ID", "E.C.NUMBER", "EC", "PMD.NO", "NO_MOLECULE",
@@ -6,6 +7,11 @@ properties = ("NO.", "PROTEIN",  "MUTATION", "MUTATED_CHAIN", "ddG", "ddG_H2O", 
         "ADDITIVES", "PROTEIN_CONC", "MEASURE", "METHOD", "dG_H2O", "dG", "Tm", "dTm", "dHcal", "m", "Cm", "dCp", "STATE", 
         "REVERSIBILITY", "ACTIVITY", "ACTIVITY_Km", "ACTIVITY_Kcat", "ACTIVITY_Kd", "KEY_WORDS", "REFERENCE", "AUTHOR", "REMARKS",
         "RELATED_ENTRIES", "ASA", "dHvH")
+
+pdb_mutation = re.compile(r"PDB:[^:]*[;)]")
+mut = re.compile("[A-Z] \d* [A-Z]")
+kJ = re.compile(r"[-0-9.]* *kJ/mol")
+kcal = re.compile(r"[-0-9.]* *kc*al/mol")
 
 def open_database(argv):
     print(argv)
@@ -30,6 +36,42 @@ def open_output(argv):
     except IOError:
         print("Could not open file: ", output_name)
         sys.exit(1)
+
+def extract_pdb_coord(mutation):
+    global pdb_mutation, mut
+    s = pdb_mutation.findall(mutation)
+    if s:
+        tmp = []
+        for i in s:
+            print(mut.findall(i))
+            tmp += mut.findall(i)
+        print(mutation)
+        print(s)
+        print(', '.join(map(str, tmp)))
+        return ', '.join(map(str, tmp))
+    else:
+        return mutation
+
+def energy(ddG):
+    s = kJ.findall(ddG)
+    coeff = 1
+    if s:
+        print(ddG)
+        print(s)
+        ddG = s[0].split(' ')[0]
+        print(ddG)
+        coeff = 4.184
+    s = kcal.findall(ddG)
+    if s:
+        print(ddG)
+        ddG = s[0].split(' ')[0]
+        print(ddG)
+    try:
+        return str(float(ddG) * coeff)
+    except ValueError:
+        print(ddG)
+        print("wrong")
+        return "-"
 
 def read_block(database):
     global properties
@@ -62,9 +104,13 @@ def read_block(database):
                 if cur_line[0] not in properties:
                     block[previous_property] = block[previous_property] + ' '.join(cur_line)
                 else:
+                    if cur_line[0] == "MUTATION":
+                        cur_line[1] = extract_pdb_coord(cur_line[1])
+                    if (cur_line[0] == "ddG") or (cur_line[0] == "ddG_H2O"):
+                        cur_line[1] = energy(cur_line[1])
                     block[cur_line[0]] = cur_line[1]
                     previous_property = cur_line[0]
-
+ 
         cur_line = database.readline()
     return block
 
