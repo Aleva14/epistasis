@@ -123,6 +123,10 @@ def eris(mut_param, pdb_folder):
                           shell=True,
                           universal_newlines=True,
                           stdout=subprocess.PIPE)
+    try:
+        proc.wait(6000)
+    except subprocess.TimeoutExpired:
+        return "-"
     eris_output = proc.stdout.strip().split("\n")
     print(eris_output[-1].split()[-1])
     os.system("rm " + pdb_name)
