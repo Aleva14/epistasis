@@ -25,9 +25,10 @@ def create_dir(path):
 
 
 def parse_mut(mut):
+    global AA 
     if not mut:
         return None
-    mut = mut.split('\t')
+    mut = mut.split(',')
     if len(mut) < 5:
         print("Line has wrong format")
         return None
@@ -41,96 +42,125 @@ def parse_mut(mut):
     mut_param["AA1"] = mutation[0]
     mut_param["POS"] = mutation[1]
     mut_param["AA2"] = mutation[2]
+    if (mut_param["AA1"] not in AA.keys()) or (mut_param["AA2"] not in AA.keys()):
+        print("Wrong mutation format for No ", mut_param["No"])
+        return None
+    
     if mut[3] == '_':
         mut_param["CHAIN"] = 'A'
     else:
         mut_param["CHAIN"] = mut[3]
     mut_param["ddG_ProTherm"] = mut[4]
-    # print(mut_param)
+    # print(mut_param) 
+    if (mut_param["AA1"] not in AA.keys()) or (mut_param["AA2"] not in AA.keys()):
+        return None
     return mut_param
 
 
 def foldx(mut_param, pdb_folder, foldx_path):
     global AA
-    foldx_energy_terms = ["BackHbond", "SideHbond", "Energy_VdW", "Electro",
-                          "Energy_SolvP", "Energy_SolvH", "Energy_vdwclash",
-                          "energy_torsion", "backbone_vdwclash", "Entropy_sidec",
-                          "Entropy_mainc", "water bonds", "helix dipole",
-                          "loop_entropy", "cis_bond", "disulfide",
-                          "kn electrostatic", "partial covalent interactions",
-                          "Energy_Ionisation", "Entropy Complex"]
 
-    foldx_command = "foldx --command=PositionScan --pdb-dir=%s --pdb=%s --positions=%s"
+    #FoldX command for BuildModel option. individual_list.txt - file with list of mutations.
+    foldx_command = "foldx --command=BuildModel --pdb-dir=%s --pdb=%s --mutant-file=individual_list.txt --output-dir=%s --numberOfRuns=1 --out-pdb=false"
 
-    mut_pdb = "%s_%s.pdb" % (AA[mut_param["AA2"]] + mut_param["POS"], mut_param["PDB"])
-    wild_pdb = "%s_%s.pdb" % (AA[mut_param["AA1"]] + mut_param["POS"], mut_param["PDB"])
-    empty = "PS_%s.fxout" % mut_param["PDB"]
-    ddG_result = "PS_%s_scanning_output.txt" % mut_param["PDB"]
-    energy = "energies_%s_%s.txt" % (mut_param["POS"], mut_param["PDB"])
-    # print(mut_pdb, wild_pdb, empty, energy)
+    #Create directory to save output files of FoldX separately for each mutation
+    cur_dir = os.path.join(foldx_path, mut_param["No"])
+    create_dir(cur_dir)
 
+    #Create file with mutation
+    ind_list = open("individual_list.txt", "w")
     mutation = mut_param["AA1"] + mut_param["CHAIN"] + mut_param["POS"] + mut_param["AA2"]
-    command = foldx_command % (pdb_folder, mut_param["PDB"] + ".pdb", mutation)
+    ind_list.write(mutation + ";")
+    ind_list.close()
+
+    #Fill in the command with current values
+    print(cur_dir)
+    command = foldx_command % (pdb_folder, mut_param["PDB"] + ".pdb", cur_dir)
     print(command)
+
+    #Run FoldX
     proc = subprocess.run(command,
                           shell=True,
                           universal_newlines=True,
                           stdout=subprocess.PIPE)
+
+    #foldx_output - list of lines of FoldX stdout
     foldx_output = proc.stdout.split("\n")
-    # for line in foldx_output:
+    #for line in foldx_output:
     #     print(line)
-    if "Specified residue not found." in foldx_output:
-        return "Wrong residue", None, None
-    elif "No pdbs for the run found at:" in foldx_output:
-        return "PDB not found", None, None
+    
+    #Check if run was ok.
+    if "Specified residue not found." in proc.stdout:
+        return "Wrong residue", '-', '-'
+    elif "No pdbs for the run found at:" in proc.stdout:
+        return "PDB not found", '-', '-'
+    
+    #If ok - return time and average ddG of all runs
     else:
-        cur_dir = os.path.join(foldx_path, mut_param["No"])
-        create_dir(cur_dir)
-        os.system("mv " + wild_pdb + " " + cur_dir)
-        os.system("mv " + mut_pdb + " " + cur_dir)
-
-        energy_output = open(cur_dir + "/energies.txt", 'w')
-        energy_output.write("File\t" + "\t".join(foldx_energy_terms) + "\n")
-        with open(energy, 'r') as f:
-            for line in f.readlines():
-                energy_output.write(line)
-
-        dG = []
         for line in foldx_output:
-            if line.startswith("Total          = "):
+            if line.startswith("Total time"):
                 line = line.split()
-                # print(line)
-                dG.append(line[-1])
+                time = line[-2]
+        ddG_result = cur_dir + "/Average_" + mut_param["PDB"] + ".fxout"
+        print(ddG_result)
         with open(ddG_result, 'r') as f:
-            ddG = f.readlines()[1].split()[1]
-        return "Ok", dG, ddG
+            for line in f:
+                if line.startswith(mut_param["PDB"]):
+                    ddG = line.split()[2]
+        return "Ok", time, ddG
 
 
 def eris(mut_param, pdb_folder, eris_path):
+
+    #Command for Eris, including chain relaxation
     eris_command = "bash run_eris.sh ddg -m %s %s -r -f"
+    
+    #Extract only one chain from pdb
     atoms = prody.parsePDB(pdb_folder + "/" + mut_param["PDB"] + ".pdb", chain=mut_param["CHAIN"])
     pdb_name = mut_param["PDB"] + mut_param["CHAIN"] + ".pdb"
     prody.writePDB(pdb_name, atoms)
+    
+    #Fill in the command with current values
     command = eris_command % (mut_param["AA1"] + mut_param["POS"] + mut_param["AA2"], pdb_name)
     print(command)
     print("Eris calculating...")
-    proc = subprocess.Popen(command,
+
+    #Run Eris
+    proc = subprocess.Popen("time " + command,
                           shell=True,
                           universal_newlines=True,
-                          stdout=subprocess.PIPE)
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE)
     try:
-        eris_out, errs = proc.communicate(timeout=300)
+        eris_out, errs = proc.communicate(timeout=1)
     except subprocess.TimeoutExpired:
         proc.kill()
-        return "-"
+        return "timeout", '-', '-'
+    #print(errs) 
+    if "Segmentation" in errs:
+        return "segfault", '-', '-'
+    if "design table" in eris_out:
+        return "design", '-', '-' 
+
+    #eris_out - list of lines of Eris stdout
     eris_out = eris_out.strip().split("\n")
-    print(eris_out[-1].split()[-1])
+    time = ''
+    n = 0
+    errs = errs.strip().split("\n")
+    for line in errs:
+        print(n, line)
+        n += 1
+        if line.startswith("real"):
+            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+            time = line.split()[-1]
+    print(eris_out[-5].split()[-2])
     os.system("mv " + "eris_results.txt" + " " + eris_path)
-
-    return eris_out[-1].split()[-1]
-
+    print('TIME  ', time)
+    return "Ok", time, eris_out[-1].split()[-1]
 
 def main():
+    global AA
+    #Parse command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("mutations", help="File with mutations, format:\
                                             No\tPDB\tMUTATION\tCHAIN")
@@ -143,10 +173,12 @@ def main():
     else:
         path = "Experiment"
     
+    #Turn all paths into absolute paths
     path = os.path.abspath(path)
     args.mutations = os.path.abspath(args.mutations)
     args.pdb_folder = os.path.abspath(args.pdb_folder) 
 
+    #Open list of mutations
     try:
         mutations = open(args.mutations, 'r')
     except IOError:
@@ -155,6 +187,7 @@ def main():
     else:
         print("Opened ", args.mutations)
 
+    #Create folder to save results
     create_dir(path)
     foldx_path = os.path.join(path, "FoldX")
     create_dir(foldx_path)
@@ -162,14 +195,17 @@ def main():
     create_dir(eris_path)
 
     try:
-        res_tsv = open(os.path.join(path, "result.tsv"), 'w')
+        res_csv = open(os.path.join(path, "result.tsv"), 'w')
     except IOError:
         print("Can not create result.tsv")
         raise
     else:
         print("Created result.tsv")
 
+    #Change working directory into /tmp 
     os.chdir("/tmp/mc-buglakova")
+
+    #Create symlink to rotabase.txt (necessary for FoldX)
     try:
         os.symlink("/usr/local/share/FoldX/rotabase.txt", "rotabase.txt")
     except OSError:
@@ -179,6 +215,7 @@ def main():
     else:
         print("Symlink to rotabase.txt created")
     
+    #Create symlink to the script which runs Eris
     try:
         os.symlink("/usr/local/share/Eris/run_eris.sh", "run_eris.sh")
     except OSError:
@@ -188,39 +225,40 @@ def main():
     else:
         print("Symlink to run_eris.sh created")
 
-    res_fields = mutations.readline().strip() + "\tFX" + "\tFX_dG_WT0" +\
-                 "\tFX_dG_WT1" + "\tFX_dG_MUT" + "\tFX_ddG" + "\tEris_ddG\n"
-    res_tsv.write(res_fields)
+
+    res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,Eris,Eris_time,Eris_ddG\n"
+    res_template = "%s,%s,%s,%s,%s,%s\n"
+    res_csv.write(res_fields)
+
+    #Main loop
     mut = mutations.readline()
     mut_param = parse_mut(mut)
+    
     while mut:
+        fx_res, fx_time, fx_ddG = "-", "-", "-"
+        er_res, er_time, er_ddG = "-", "-", "-"
+ 
         if not mut_param:
-            res_tsv.write(mut.strip() + "\t" + "Not valid" + "\t-\t-\t-\t-\n")
-            mut = mutations.readline()
-            mut_param = parse_mut(mut)
-            continue
+            fx_res = "Not valid"
 
         # FoldX
-        foldx_res, dG, ddG = foldx(mut_param, args.pdb_folder, foldx_path)
-        print(mut_param["No"], ": ", foldx_res)
-        if (foldx_res == "Wrong residue") or (foldx_res == "PDB not found"):
-            foldx_res += "\t-\t-\t-\t-\t-\n"
-            res_tsv.write(mut.strip() + "\t" + foldx_res)
-            mut = mutations.readline()
-            mut_param = parse_mut(mut)
-            continue
-
-        foldx_res = foldx_res + "\t" + "\t".join(dG) + "\t" + ddG
-        print(" ".join(dG), " ", ddG)
+        else:
+            fx_res, fx_time, fx_ddG = foldx(mut_param, args.pdb_folder, foldx_path)
+            print(mut_param["No"], ": ", fx_res, fx_time, fx_ddG)
 
         # Eris
-        eris_res = eris(mut_param, args.pdb_folder, eris_path)
-        res_tsv.write(mut.strip() + "\t" + foldx_res + "\t" + eris_res + "\n")
+            er_res, er_time, er_ddG = eris(mut_param, args.pdb_folder, eris_path)
+            print(mut_param["No"], ": ", er_res, er_time, er_ddG)
+              
+        res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG)
+        res_csv.write(mut.strip() + "," + res)
+
+        #Read next mutation
         mut = mutations.readline()
         mut_param = parse_mut(mut)
 
     mutations.close()
-    res_tsv.close()
+    res_csv.close()
 
 
 if __name__ == "__main__":
