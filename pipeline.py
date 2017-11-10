@@ -27,24 +27,24 @@ def create_dir(path):
 def parse_mut(mut):
     global AA 
     if not mut:
-        return None
+        return None, None
     mut = mut.split(',')
     if len(mut) < 5:
         print("Line has wrong format")
-        return None
+        return None, None
     mut_param = {}
     mut_param["No"] = mut[0]
     mut_param["PDB"] = mut[1].lower()
     mutation = mut[2].split(' ')
     if len(mutation) != 3:
-        print("Wrong mutation format for No ", mut_param["No"])
-        return None
+        #print("Wrong mutation format for No ", mut_param["No"])
+        return None, mut_param["No"]
     mut_param["AA1"] = mutation[0]
     mut_param["POS"] = mutation[1]
     mut_param["AA2"] = mutation[2]
     if (mut_param["AA1"] not in AA.keys()) or (mut_param["AA2"] not in AA.keys()):
-        print("Wrong mutation format for No ", mut_param["No"])
-        return None
+        #print("Wrong mutation format for No ", mut_param["No"])
+        return None, mut_param["No"]
     
     if mut[3] == '_':
         mut_param["CHAIN"] = 'A'
@@ -53,8 +53,8 @@ def parse_mut(mut):
     mut_param["ddG_ProTherm"] = mut[4]
     # print(mut_param) 
     if (mut_param["AA1"] not in AA.keys()) or (mut_param["AA2"] not in AA.keys()):
-        return None
-    return mut_param
+        return None, "Wrong format"
+    return mut_param, mut_param["No"]
 
 
 def foldx(mut_param, pdb_folder, foldx_path):
@@ -132,11 +132,10 @@ def eris(mut_param, pdb_folder, eris_path):
                           stdout=subprocess.PIPE,
                           stderr=subprocess.PIPE)
     try:
-        eris_out, errs = proc.communicate(timeout=1)
+        eris_out, errs = proc.communicate(timeout=3600)
     except subprocess.TimeoutExpired:
         proc.kill()
         return "timeout", '-', '-'
-    #print(errs) 
     if "Segmentation" in errs:
         return "segfault", '-', '-'
     if "design table" in eris_out:
@@ -145,17 +144,12 @@ def eris(mut_param, pdb_folder, eris_path):
     #eris_out - list of lines of Eris stdout
     eris_out = eris_out.strip().split("\n")
     time = ''
-    n = 0
     errs = errs.strip().split("\n")
     for line in errs:
-        print(n, line)
-        n += 1
         if line.startswith("real"):
-            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             time = line.split()[-1]
     print(eris_out[-5].split()[-2])
-    os.system("mv " + "eris_results.txt" + " " + eris_path)
-    print('TIME  ', time)
+    
     return "Ok", time, eris_out[-1].split()[-1]
 
 def main():
@@ -167,25 +161,34 @@ def main():
     parser.add_argument("pdb_folder", help="Folder with pdb structures")
     parser.add_argument("-directory", help="directory to save results, \
                     otherwise directory has same name as file with mutations")
+    parser.add_argument("-mut_nums", help="Numbers of mutations in the format \"1-5,8\"")
     args = parser.parse_args()
     if args.directory:
         path = args.directory
     else:
         path = "Experiment"
+
+    if args.mut_nums:
+        mut_nums = []
+        print(args.mut_nums)
+        args.mut_nums = args.mut_nums.split(",")
+        for m in args.mut_nums:
+            print(m)
+            if m.isdigit():
+                mut_nums.append(int(m))
+            else:
+                m = m.split("-")
+                mut_nums += range(int(m[0]), int(m[1] + 1))
+        if not mut_nums:
+            mut_nums = "All"
+    else:
+        mut_nums = "All"
+    print(mut_nums)            
     
     #Turn all paths into absolute paths
     path = os.path.abspath(path)
-    args.mutations = os.path.abspath(args.mutations)
-    args.pdb_folder = os.path.abspath(args.pdb_folder) 
-
-    #Open list of mutations
-    try:
-        mutations = open(args.mutations, 'r')
-    except IOError:
-        print('Can not open ', args.mutations)
-        raise
-    else:
-        print("Opened ", args.mutations)
+    mutations_path = os.path.abspath(args.mutations)
+    pdb_folder_path = os.path.abspath(args.pdb_folder) 
 
     #Create folder to save results
     create_dir(path)
@@ -194,15 +197,7 @@ def main():
     eris_path = os.path.join(path, "Eris")
     create_dir(eris_path)
 
-    try:
-        res_csv = open(os.path.join(path, "result.tsv"), 'w')
-    except IOError:
-        print("Can not create result.tsv")
-        raise
-    else:
-        print("Created result.tsv")
-
-    #Change working directory into /tmp 
+       #Change working directory into /tmp 
     os.chdir("/tmp/mc-buglakova")
 
     #Create symlink to rotabase.txt (necessary for FoldX)
@@ -225,6 +220,28 @@ def main():
     else:
         print("Symlink to run_eris.sh created")
 
+    result_path = os.path.join(path, "result.tsv")
+    main_loop(result_path, foldx_path, eris_path, pdb_folder_path, mutations_path, mut_nums)
+
+
+def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mut_nums):
+    #Open list of mutations
+    try:
+        mutations = open(mutations_path, 'r')
+    except IOError:
+        print('Can not open ', mutations_path)
+        raise
+    else:
+        print("Opened ", mutations_path)
+
+    #Create csv with results
+    try:
+        res_csv = open(result_path, 'w')
+    except IOError:
+        print("Can not create result.tsv")
+        raise
+    else:
+        print("Created result.tsv")
 
     res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,Eris,Eris_time,Eris_ddG\n"
     res_template = "%s,%s,%s,%s,%s,%s\n"
@@ -232,31 +249,32 @@ def main():
 
     #Main loop
     mut = mutations.readline()
-    mut_param = parse_mut(mut)
+    mut_param, mut_num = parse_mut(mut)
     
     while mut:
         fx_res, fx_time, fx_ddG = "-", "-", "-"
         er_res, er_time, er_ddG = "-", "-", "-"
  
-        if not mut_param:
+        if not mut_num:
             fx_res = "Not valid"
 
         # FoldX
-        else:
-            fx_res, fx_time, fx_ddG = foldx(mut_param, args.pdb_folder, foldx_path)
+        elif mut_nums == "All" or (int(mut_num) in mut_nums):
+            fx_res, fx_time, fx_ddG = foldx(mut_param, pdb_folder, foldx_path)
             print(mut_param["No"], ": ", fx_res, fx_time, fx_ddG)
 
         # Eris
-            er_res, er_time, er_ddG = eris(mut_param, args.pdb_folder, eris_path)
+            er_res, er_time, er_ddG = eris(mut_param, pdb_folder, eris_path)
             print(mut_param["No"], ": ", er_res, er_time, er_ddG)
               
-        res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG)
-        res_csv.write(mut.strip() + "," + res)
+            res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG)
+            res_csv.write(mut.strip() + "," + res)
 
         #Read next mutation
         mut = mutations.readline()
-        mut_param = parse_mut(mut)
+        mut_param, mut_num = parse_mut(mut)
 
+    os.system("mv " + "eris_results.txt" + " " + eris_path)
     mutations.close()
     res_csv.close()
 
