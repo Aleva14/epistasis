@@ -2,6 +2,7 @@ import argparse
 import os
 import subprocess
 import prody
+import fnmatch
 
 AA = {"A": "ALA", "R": "AGR", "N": "ASN", "D": "ASP", "B": "ASX", "C": "CYS",
       "E": "GLU", "Q": "GLN", "Z": "GLX", "G": "GLY", "H": "HIS", "I": "ILE",
@@ -152,6 +153,84 @@ def eris(mut_param, pdb_folder, eris_path):
     
     return "Ok", time, eris_out[-1].split()[-1]
 
+def imutant(mut_param, pdb_folder):
+
+    #Command for I-Mutant
+    #imut_command = "python /usr/local/share/I-Mutant2.0.7/I-Mutant2.0.py -pdb Test/1cei.pdb Test/1cei.dssp _ 17 A"
+    imut_command_sign = "python -O /usr/local/share/I-Mutant2.0.7/I-Mutant2.0.py -pdb %s %s %s %s %s"    
+    imut_command_ddg =  "python -O /usr/local/share/I-Mutant2.0.7/I-Mutant2.0.py -pdbv %s %s %s %s %s"
+    #Fill in the command with current values
+    pdb_path = os.path.join(pdb_folder, mut_param["PDB"] + ".pdb")
+    dssp_path = os.path.join(pdb_folder, mut_param["PDB"] + ".dssp")
+    command_sign = imut_command_sign % (pdb_path, dssp_path, mut_param["CHAIN"], mut_param["POS"], mut_param["AA2"])
+    command_ddg = imut_command_ddg % (pdb_path, dssp_path, mut_param["CHAIN"], mut_param["POS"], mut_param["AA2"])
+
+    print(command_sign)
+    
+    #Run I-MUTANT to find sign
+    proc = subprocess.Popen("time " + command_sign,
+                          shell=True,
+                          universal_newlines=True,
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE)
+    try:
+        imut_out, errs = proc.communicate(timeout=3600)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        return "timeout", '-', '-', '-'
+
+    imut_out = imut_out.strip().split("\n")
+    time = ''
+    errs = errs.strip().split("\n")
+    for line in errs:
+        if line.startswith("real"):
+            time = line.split()[-1]
+    result = imut_out[11].split()
+    if result[3] == "Increase":
+        sign = "-"
+    else:
+        sign = "+"
+    RI = result[4]
+    print("SIGN", sign)
+    
+    #Run I-MUTANT to find ddG
+    proc = subprocess.Popen("time " + command_ddg,
+                          shell=True,
+                          universal_newlines=True,
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE)
+    try:
+        imut_out, errs = proc.communicate(timeout=3600)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        return "timeout", '-', '-', '-'
+    imut_out = imut_out.strip().split("\n")
+    time = ''
+    errs = errs.strip().split("\n")
+    for line in errs:
+        if line.startswith("real"):
+            time = line.split()[-1]
+    result = imut_out[11].split()
+    ddg = str(-float(result[3]))
+  
+    return "Ok", time, sign, ddg, RI
+ 
+
+def dssp(pdb_folder):
+    #command = "dssp pdb_short/1arr.pdb pdb_short/1arr.dssp"
+    command = "dssp %s %s"
+    file_names = os.listdir(pdb_folder)
+    for file in file_names:
+        if fnmatch.fnmatch(file, "*.pdb"):
+            dssp_name = file[:-3] + "dssp"
+            if dssp_name not in file_names:
+                cur_command = command % (os.path.join(pdb_folder, file), os.path.join(pdb_folder, dssp_name))
+                proc = subprocess.run(cur_command,
+                          shell=True,
+                          universal_newlines=True,
+                          stdout=subprocess.PIPE)
+
+
 def main():
     global AA
     #Parse command line arguments
@@ -183,7 +262,7 @@ def main():
             mut_nums = "All"
     else:
         mut_nums = "All"
-    print(mut_nums)            
+    print("Mutation numbers:",  mut_nums)            
     
     #Turn all paths into absolute paths
     path = os.path.abspath(path)
@@ -197,7 +276,7 @@ def main():
     eris_path = os.path.join(path, "Eris")
     create_dir(eris_path)
 
-       #Change working directory into /tmp 
+    #Change working directory into /tmp 
     os.chdir("/tmp/mc-buglakova")
 
     #Create symlink to rotabase.txt (necessary for FoldX)
@@ -219,6 +298,9 @@ def main():
             raise
     else:
         print("Symlink to run_eris.sh created")
+
+    #Make dssp files for I-Mutant
+    dssp(pdb_folder_path)
 
     result_path = os.path.join(path, "result.tsv")
     main_loop(result_path, foldx_path, eris_path, pdb_folder_path, mutations_path, mut_nums)
@@ -243,8 +325,8 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
     else:
         print("Created result.tsv")
 
-    res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,Eris,Eris_time,Eris_ddG\n"
-    res_template = "%s,%s,%s,%s,%s,%s\n"
+    res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,Eris,Eris_time,Eris_ddG,iMut,iMut_time,iMut_sign,iMut_ddg,iMut_RI\n"
+    res_template = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n"
     res_csv.write(res_fields)
 
     #Main loop
@@ -254,20 +336,28 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
     while mut:
         fx_res, fx_time, fx_ddG = "-", "-", "-"
         er_res, er_time, er_ddG = "-", "-", "-"
- 
+        imut, imut_time, imut_RI, imut_ddG = "-", "-", "-", "-"
         if not mut_num:
             fx_res = "Not valid"
 
-        # FoldX
         elif mut_nums == "All" or (int(mut_num) in mut_nums):
+            print("Mutation number:", mut_num)
+        
+        #FoldX
             fx_res, fx_time, fx_ddG = foldx(mut_param, pdb_folder, foldx_path)
             print(mut_param["No"], ": ", fx_res, fx_time, fx_ddG)
+            if fx_res == "Ok":
 
         # Eris
-            er_res, er_time, er_ddG = eris(mut_param, pdb_folder, eris_path)
-            print(mut_param["No"], ": ", er_res, er_time, er_ddG)
-              
-            res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG)
+                er_res, er_time, er_ddG = eris(mut_param, pdb_folder, eris_path)
+                print(mut_param["No"], ": ", er_res, er_time, er_ddG)
+        
+
+        # I-MUTANT
+                imut, imut_time, imut_sign, imut_ddG, imut_RI = imutant(mut_param, pdb_folder)
+                print(imut, imut_time, imut_sign, imut_ddG, imut_RI)
+                print("\n")      
+            res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG, imut, imut_time, imut_sign, imut_ddG, imut_RI)
             res_csv.write(mut.strip() + "," + res)
 
         #Read next mutation
