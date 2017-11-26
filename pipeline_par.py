@@ -10,21 +10,31 @@ AA = {"A": "ALA", "R": "AGR", "N": "ASN", "D": "ASP", "B": "ASX", "C": "CYS",
       "L": "LEU", "K": "LYS", "M": "MET", "F": "PHE", "P": "PRO", "S": "SER",
       "T": "THR", "W": "TRP", "Y": "TYR", "V": "VAL"}
 
+def proc_print(*args):
+    print("--------------------------------------------------")
+    print("Process ", os.getpid(), ": ", *args)
+    print("--------------------------------------------------") 
+    
+
 
 def create_dir(path):
     try:
         os.makedirs(path)
     except OSError:
         if not os.path.isdir(path):
-            print("Unable to create directory ", path)
-            print(OSError)
+            proc_print("Unable to create directory ", path)
+            proc_print(OSError)
             raise
         else:
-            print("The directory ", path, "already exists")
+            proc_print("The directory ", path, "already exists")
             raise
     else:
-        print("Directory ", path, "created.")
+        proc_print("Directory ", path, "created.")
 
+
+def time_to_sec(time):
+    time = time.split('m')
+    return int(time[0]) * 60 + float(time[1][:-1])
 
 def parse_mut(mut):
     global AA 
@@ -32,20 +42,20 @@ def parse_mut(mut):
         return None, None
     mut = mut.split(',')
     if len(mut) < 5:
-        print("Line has wrong format")
+        proc_print("Line has wrong format")
         return None, None
     mut_param = {}
     mut_param["No"] = mut[0]
     mut_param["PDB"] = mut[1].lower()
     mutation = mut[2].split(' ')
     if len(mutation) != 3:
-        #print("Wrong mutation format for No ", mut_param["No"])
+        #proc_print("Wrong mutation format for No ", mut_param["No"])
         return None, mut_param["No"]
     mut_param["AA1"] = mutation[0]
     mut_param["POS"] = mutation[1]
     mut_param["AA2"] = mutation[2]
     if (mut_param["AA1"] not in AA.keys()) or (mut_param["AA2"] not in AA.keys()):
-        #print("Wrong mutation format for No ", mut_param["No"])
+        #proc_print("Wrong mutation format for No ", mut_param["No"])
         return None, mut_param["No"]
     
     if mut[3] == '_':
@@ -53,7 +63,7 @@ def parse_mut(mut):
     else:
         mut_param["CHAIN"] = mut[3]
     mut_param["ddG_ProTherm"] = mut[4]
-    # print(mut_param) 
+    # proc_print(mut_param) 
     if (mut_param["AA1"] not in AA.keys()) or (mut_param["AA2"] not in AA.keys()):
         return None, "Wrong format"
     return mut_param, mut_param["No"]
@@ -66,7 +76,7 @@ def foldx(mut_param, pdb_folder, foldx_path):
     foldx_command = "foldx --command=BuildModel --pdb-dir=%s --pdb=%s --mutant-file=individual_list.txt --output-dir=%s --numberOfRuns=1 --out-pdb=false"
 
     #Create directory to save output files of FoldX separately for each mutation
-    print(mut_param is None)
+    proc_print(mut_param is None)
     cur_dir = os.path.join(foldx_path, mut_param["No"])
     create_dir(cur_dir)
 
@@ -77,9 +87,9 @@ def foldx(mut_param, pdb_folder, foldx_path):
     ind_list.close()
 
     #Fill in the command with current values
-    print(cur_dir)
+    proc_print(cur_dir)
     command = foldx_command % (pdb_folder, mut_param["PDB"] + ".pdb", cur_dir)
-    print(command)
+    proc_print(command)
 
     #Run FoldX
     proc = subprocess.run(command,
@@ -90,7 +100,7 @@ def foldx(mut_param, pdb_folder, foldx_path):
     #foldx_output - list of lines of FoldX stdout
     foldx_output = proc.stdout.split("\n")
     #for line in foldx_output:
-    #     print(line)
+    #     proc_print(line)
     
     #Check if run was ok.
     if "Specified residue not found." in proc.stdout:
@@ -105,7 +115,7 @@ def foldx(mut_param, pdb_folder, foldx_path):
                 line = line.split()
                 time = line[-2]
         ddG_result = cur_dir + "/Average_" + mut_param["PDB"] + ".fxout"
-        print(ddG_result)
+        proc_print(ddG_result)
         with open(ddG_result, 'r') as f:
             for line in f:
                 if line.startswith(mut_param["PDB"]):
@@ -125,8 +135,8 @@ def eris(mut_param, pdb_folder, eris_path):
     
     #Fill in the command with current values
     command = eris_command % (mut_param["AA1"] + mut_param["POS"] + mut_param["AA2"], pdb_name)
-    print(command)
-    print("Eris calculating...")
+    proc_print(command)
+    proc_print("Eris calculating...")
 
     #Run Eris
     proc = subprocess.Popen("time " + command,
@@ -151,9 +161,9 @@ def eris(mut_param, pdb_folder, eris_path):
     for line in errs:
         if line.startswith("real"):
             time = line.split()[-1]
-    print(eris_out[-5].split()[-2])
+    proc_print(eris_out[-5].split()[-2])
     
-    return "Ok", time, eris_out[-1].split()[-1]
+    return "Ok", time_to_sec(time), eris_out[-1].split()[-1]
 
 def imutant(mut_param, pdb_folder):
 
@@ -167,7 +177,7 @@ def imutant(mut_param, pdb_folder):
     command_sign = imut_command_sign % (pdb_path, dssp_path, mut_param["CHAIN"], mut_param["POS"], mut_param["AA2"])
     command_ddg = imut_command_ddg % (pdb_path, dssp_path, mut_param["CHAIN"], mut_param["POS"], mut_param["AA2"])
 
-    print(command_sign)
+    proc_print(command_sign)
     
     #Run I-MUTANT to find sign
     proc = subprocess.Popen("time " + command_sign,
@@ -193,7 +203,7 @@ def imutant(mut_param, pdb_folder):
     else:
         sign = "+"
     RI = result[4]
-    print("SIGN", sign)
+    proc_print("SIGN", sign)
     
     #Run I-MUTANT to find ddG
     proc = subprocess.Popen("time " + command_ddg,
@@ -215,7 +225,7 @@ def imutant(mut_param, pdb_folder):
     result = imut_out[11].split()
     ddg = str(-float(result[3]))
   
-    return "Ok", time, sign, ddg, RI
+    return "Ok", time_to_sec(time), sign, ddg, RI
  
 
 def dssp(pdb_folder):
@@ -241,6 +251,32 @@ def collect_mut_nums(mutations_path):
                 mut_nums.append(int(N))
     print(mut_nums)
     return mut_nums
+
+
+def maestro(mut_param, pdb_folder):
+    # command = "maestro /usr/local/share/MAESTRO/config.xml pdb_short/3ssi.pdb --bu --evalmut='V13.A{I}'"
+    command = "maestro /usr/local/share/MAESTRO/config.xml %s --bu --evalmut='%s%s.%s{%s}'"
+    pdb_path = os.path.join(pdb_folder, mut_param["PDB"] + ".pdb")
+    maestro_command = command % (pdb_path, mut_param['AA1'], mut_param['POS'], mut_param['CHAIN'], mut_param['AA2'])
+    proc_print(maestro_command)
+    proc = subprocess.Popen(maestro_command,
+                            shell=True,
+                            universal_newlines=True,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
+    try:
+        maestro_out, errs = proc.communicate(timeout=3600)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        return "timeout", '-', '-'
+    maestro_out = maestro_out.strip().split("\n")[2]
+    maestro_out = maestro_out.split()
+    print(maestro_out)
+    maestro_ddG = maestro_out[5]
+    maestro_conf = maestro_out[6]
+    maestro_len = maestro_out[1]
+
+    return "Ok", maestro_ddG, maestro_conf, maestro_len
 
 
 def main():
@@ -361,27 +397,27 @@ def main():
 
 
 def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mut_nums):
-    print(os.getpid())
+    proc_print(os.getpid())
     #Open list of mutations
     try:
         mutations = open(mutations_path, 'r')
     except IOError:
-        print('Can not open ', mutations_path)
+        proc_print('Can not open ', mutations_path)
         raise
     else:
-        print("Opened ", mutations_path)
+        proc_print("Opened ", mutations_path)
 
     #Create csv with results
     try:
         res_csv = open(result_path, 'w')
     except IOError:
-        print("Can not create result.tsv")
+        proc_print("Can not create result.tsv")
         raise
     else:
-        print("Created result.tsv")
+        proc_print("Created result.tsv")
 
-    res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,Eris,Eris_time,Eris_ddG,iMut,iMut_time,iMut_sign,iMut_ddg,iMut_RI\n"
-    res_template = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n"
+    res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,Eris,Eris_time,Eris_ddG,iMut,iMut_time,iMut_sign,iMut_ddg,iMut_RI,M,M_ddG,M_conf,LEN\n"
+    res_template = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n"
     res_csv.write(res_fields)
 
     #Main loop
@@ -392,27 +428,33 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
         fx_res, fx_time, fx_ddG = "-", "-", "-"
         er_res, er_time, er_ddG = "-", "-", "-"
         imut, imut_time, imut_sign, imut_RI, imut_ddG = "-", "-", "-", "-", "-"
+        maestro_res, maestro_ddG, maestro_conf, seq_len = "-", "-", "-", "-"
+
         if not mut_num:
             fx_res = "Not valid"
 
         elif mut_param and (mut_nums == "All" or (int(mut_num) in mut_nums)):
-            print("Mutation number:", mut_num)
+            proc_print("Mutation number:", mut_num)
         
         #FoldX
             fx_res, fx_time, fx_ddG = foldx(mut_param, pdb_folder, foldx_path)
-            print(mut_param["No"], ": ", fx_res, fx_time, fx_ddG)
+            proc_print("FoldX ", mut_param["No"], ": ", fx_res, fx_time, fx_ddG)
             if fx_res == "Ok":
 
         # Eris
-                er_res, er_time, er_ddG = eris(mut_param, pdb_folder, eris_path)
-                print(mut_param["No"], ": ", er_res, er_time, er_ddG)
+                #er_res, er_time, er_ddG = eris(mut_param, pdb_folder, eris_path)
+                #proc_print("Eris ", mut_param["No"], ": ", er_res, er_time, er_ddG)
         
-
         # I-MUTANT
-                imut, imut_time, imut_sign, imut_ddG, imut_RI = imutant(mut_param, pdb_folder)
-                print(imut, imut_time, imut_sign, imut_ddG, imut_RI)
-                print("\n")      
-            res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG, imut, imut_time, imut_sign, imut_ddG, imut_RI)
+                #imut, imut_time, imut_sign, imut_ddG, imut_RI = imutant(mut_param, pdb_folder)
+                #proc_print("I-MUTANT ", mut_param["No"], ": ", imut, imut_time, imut_sign, imut_ddG, imut_RI)
+
+        # MAESTRO
+                maestro_res, maestro_ddG, maestro_conf, seq_len = maestro(mut_param, pdb_folder)
+                proc_print("MAESTRO ", mut_param["No"], ": ", maestro, maestro_ddG, maestro_conf) 
+
+            res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG, imut, imut_time, imut_sign, imut_ddG, imut_RI, 
+                                  maestro_res, maestro_ddG, maestro_conf, seq_len)
             res_csv.write(mut.strip() + "," + res)
 
         #Read next mutation
