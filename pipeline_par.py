@@ -4,6 +4,7 @@ import subprocess
 import prody
 import fnmatch
 import multiprocessing as mp
+import time
 
 AA = {"A": "ALA", "R": "AGR", "N": "ASN", "D": "ASP", "B": "ASX", "C": "CYS",
       "E": "GLU", "Q": "GLN", "Z": "GLX", "G": "GLY", "H": "HIS", "I": "ILE",
@@ -69,11 +70,11 @@ def parse_mut(mut):
     return mut_param, mut_param["No"]
 
 
-def foldx(mut_param, pdb_folder, foldx_path):
+def foldx(mut_param, pdb_folder, foldx_path, n):
     global AA
 
     #FoldX command for BuildModel option. individual_list.txt - file with list of mutations.
-    foldx_command = "foldx --command=BuildModel --pdb-dir=%s --pdb=%s --mutant-file=individual_list.txt --output-dir=%s --numberOfRuns=1 --out-pdb=false"
+    foldx_command = "foldx --command=BuildModel --pdb-dir=%s --pdb=%s --mutant-file=individual_list" + str(n) + ".txt --output-dir=%s --numberOfRuns=10 --out-pdb=false"
 
     #Create directory to save output files of FoldX separately for each mutation
     proc_print(mut_param is None)
@@ -81,7 +82,7 @@ def foldx(mut_param, pdb_folder, foldx_path):
     create_dir(cur_dir)
 
     #Create file with mutation
-    ind_list = open("individual_list.txt", "w")
+    ind_list = open("individual_list" + str(n) + ".txt", "w")
     mutation = mut_param["AA1"] + mut_param["CHAIN"] + mut_param["POS"] + mut_param["AA2"]
     ind_list.write(mutation + ";")
     ind_list.close()
@@ -294,7 +295,7 @@ def main():
     if args.directory:
         path = args.directory
     else:
-        path = "Experiment"
+        path = args.mutations[:-4]
 
     if args.mut_nums:
         mut_nums = []
@@ -358,7 +359,7 @@ def main():
     dssp(pdb_folder_path)
 
     result_path = os.path.join(path, "result.tsv")
-    
+
     if nproc == 1:
         main_loop(result_path, foldx_path, eris_path, pdb_folder_path, mutations_path, mut_nums)
     else:
@@ -372,6 +373,7 @@ def main():
         else:
             print("Opened ", mutations_path)
         N = len(mutations.readlines())
+        mutations.close()
         n_per_proc = round(N / nproc)
         for i in range(nproc):
             i_res_path = "result" + str(i) + ".tsv"
@@ -393,20 +395,19 @@ def main():
                             file_i.readline()
                         for line in file_i:
                             file.write(line)
-            
+    mutations.close()        
 
 
 def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mut_nums):
-    proc_print(os.getpid())
-    #Open list of mutations
     try:
         mutations = open(mutations_path, 'r')
     except IOError:
-        proc_print('Can not open ', mutations_path)
+        print('Can not open ', mutations_path)
         raise
     else:
-        proc_print("Opened ", mutations_path)
+        print("Opened ", mutations_path)
 
+    n = os.getpid()
     #Create csv with results
     try:
         res_csv = open(result_path, 'w')
@@ -421,10 +422,9 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
     res_csv.write(res_fields)
 
     #Main loop
-    mut = mutations.readline()
-    mut_param, mut_num = parse_mut(mut)
     
-    while mut:
+    for mut in mutations:
+        mut_param, mut_num = parse_mut(mut)
         fx_res, fx_time, fx_ddG = "-", "-", "-"
         er_res, er_time, er_ddG = "-", "-", "-"
         imut, imut_time, imut_sign, imut_RI, imut_ddG = "-", "-", "-", "-", "-"
@@ -437,7 +437,7 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
             proc_print("Mutation number:", mut_num)
         
         #FoldX
-            fx_res, fx_time, fx_ddG = foldx(mut_param, pdb_folder, foldx_path)
+            fx_res, fx_time, fx_ddG = foldx(mut_param, pdb_folder, foldx_path, n)
             proc_print("FoldX ", mut_param["No"], ": ", fx_res, fx_time, fx_ddG)
             if fx_res == "Ok":
 
@@ -446,8 +446,8 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
                 #proc_print("Eris ", mut_param["No"], ": ", er_res, er_time, er_ddG)
         
         # I-MUTANT
-                #imut, imut_time, imut_sign, imut_ddG, imut_RI = imutant(mut_param, pdb_folder)
-                #proc_print("I-MUTANT ", mut_param["No"], ": ", imut, imut_time, imut_sign, imut_ddG, imut_RI)
+                imut, imut_time, imut_sign, imut_ddG, imut_RI = imutant(mut_param, pdb_folder)
+                proc_print("I-MUTANT ", mut_param["No"], ": ", imut, imut_time, imut_sign, imut_ddG, imut_RI)
 
         # MAESTRO
                 maestro_res, maestro_ddG, maestro_conf, seq_len = maestro(mut_param, pdb_folder)
@@ -457,12 +457,8 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
                                   maestro_res, maestro_ddG, maestro_conf, seq_len)
             res_csv.write(mut.strip() + "," + res)
 
-        #Read next mutation
-        mut = mutations.readline()
-        mut_param, mut_num = parse_mut(mut)
 
-    os.system("mv " + "eris_results.txt" + " " + eris_path)
-    mutations.close()
+    # os.system("mv " + "eris_results.txt" + " " + eris_path)
     res_csv.close()
 
 
