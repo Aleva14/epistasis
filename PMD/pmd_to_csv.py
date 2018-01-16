@@ -110,6 +110,7 @@ def split_into_experiments(block, output):
 def read_block(database, output):
     global properties
     global half_keys
+    global delimiters
     cur_line = database.readline()
     while not cur_line.startswith("ENTRY"):
         cur_line = database.readline()
@@ -130,7 +131,10 @@ def read_block(database, output):
                     print(cur_line)
                     block[-1][1] += '; ' + cur_line[1].strip()
             if not half_key:
-                block[-1][1] += ' ' + cur_line.strip()
+                if block[-1][0] in delimiters:
+                    block[-1][1] += ';' + cur_line.strip()
+                else:
+                    block[-1][1] += ' ' + cur_line.strip()
 
         else:
             cur_line = cur_line.split(None, 1)
