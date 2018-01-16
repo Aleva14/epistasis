@@ -48,7 +48,7 @@ def parse_mut(mut):
     mut_param = {}
     mut_param["No"] = mut[0]
     mut_param["PDB"] = mut[1].lower()
-    mutation = mut[2].split(' ')
+    mutation = mut[2].split()
     if len(mutation) != 3:
         #proc_print("Wrong mutation format for No ", mut_param["No"])
         return None, mut_param["No"]
@@ -104,9 +104,9 @@ def foldx(mut_param, pdb_folder, foldx_path, n):
     
     #Check if run was ok.
     if "Specified residue not found." in proc.stdout:
-        return "Wrong residue", '-', '-', '-'
+        return "Wrong residue", '-', '-'
     elif "No pdbs for the run found at:" in proc.stdout:
-        return "PDB not found", '-', '-', '-'
+        return "PDB not found", '-', '-'
     
     #If ok - return time and average ddG of all runs
     else:
@@ -120,41 +120,42 @@ def foldx(mut_param, pdb_folder, foldx_path, n):
             for line in f:
                 if line.startswith(mut_param["PDB"]):
                     ddG = line.split()[2]
-    
-    command = foldx_command % (pdb_folder, mut_param["PDB"] + "_Repair.pdb", cur_dir)
-    proc_print(command)
+    return "Ok", time, ddG    
+
+    #command_repair = foldx_command % (pdb_folder, mut_param["PDB"] + "_Repair.pdb", cur_dir)
+    #proc_print(command_repair)
 
     #Run FoldX with RepairPDB
-    proc = subprocess.run(command,
-                          shell=True,
-                          universal_newlines=True,
-                          stdout=subprocess.PIPE)
+    #proc = subprocess.run(command_repair,
+    #                      shell=True,
+    #                      universal_newlines=True,
+    #                      stdout=subprocess.PIPE)
 
     #foldx_output - list of lines of FoldX stdout
-    foldx_output = proc.stdout.split("\n")
+    #foldx_output_repair = proc.stdout.split("\n")
     #for line in foldx_output:
     #     proc_print(line)
     
-    #Check if run was ok.
-    if "Specified residue not found." in proc.stdout:
-        return "Wrong residue", '-', '-', '-'
-    elif "No pdbs for the run found at:" in proc.stdout:
-        return "PDB not found", '-', '-', '-'
+    ##Check if run was ok.
+    #if "Specified residue not found." in proc.stdout:
+    #    return "Wrong residue", '-', '-', '-'
+    #elif "No pdbs for the run found at:" in proc.stdout:
+    #    return "PDB not found", '-', '-', '-'
     
-    #If ok - return time and average ddG of all runs
-    else:
-        for line in foldx_output:
-            if line.startswith("Total time"):
-                line = line.split()
-                time = line[-2]
-        ddG_result = cur_dir + "/Average_" + mut_param["PDB"] + ".fxout"
-        proc_print(ddG_result)
-        with open(ddG_result, 'r') as f:
-            for line in f:
-                if line.startswith(mut_param["PDB"]):
-                    ddG_Repair = line.split()[2]
-
-        return "Ok", time, ddG, ddG_Repair
+    ##If ok - return time and average ddG of all runs
+    #else:
+    #    for line in foldx_output_repair:
+    #        if line.startswith("Total time"):
+    #            line = line.split()
+    #            time = line[-2]
+    #    ddG_result_repair = cur_dir + "/Average_" + mut_param["PDB"] + "_Repair" + ".fxout"
+    #    proc_print(ddG_result_repair)
+    #    with open(ddG_result_repair, 'r') as f:
+    #        for line in f:
+    #            if line.startswith(mut_param["PDB"]):
+    #                ddG_Repair = line.split()[2]
+    #    print("ddG ", ddG, "Repair ", ddG_Repair) 
+    #    return "Ok", time, ddG, ddG_Repair
 
 
 def eris(mut_param, pdb_folder, eris_path):
@@ -185,10 +186,12 @@ def eris(mut_param, pdb_folder, eris_path):
         return "timeout", '-', '-'
     if "Segmentation" in errs:
         return "segfault", '-', '-'
-    if "design table" in eris_out:
+    if "design table" in eris_out or "design table" in errs:
         return "design", '-', '-' 
 
     #eris_out - list of lines of Eris stdout
+    print(eris_out)
+    print(errs)
     eris_out = eris_out.strip().split("\n")
     time = ''
     errs = errs.strip().split("\n")
@@ -453,46 +456,47 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
     else:
         proc_print("Created " + result_path)
 
-    res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,,FX_ddG_R,Eris,Eris_time,Eris_ddG,iMut,iMut_time,iMut_sign,iMut_ddg,iMut_RI,M,M_ddG,M_conf,LEN\n"
-    res_template = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n"
+    res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,Eris,Eris_time,Eris_ddG,iMut,iMut_time,iMut_sign,iMut_ddg,iMut_RI,M,M_ddG,M_conf,LEN\n"
+    res_template = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n"
     res_csv.write(res_fields)
 
     #Main loop
     
     for mut in mutations:
         mut_param, mut_num = parse_mut(mut)
-        fx_res, fx_time, fx_ddG, fx_ddG_R = "-", "-", "-", "-"
+        fx_res, fx_time, fx_ddG  = "-", "-", "-"
         er_res, er_time, er_ddG = "-", "-", "-"
         imut, imut_time, imut_sign, imut_RI, imut_ddG = "-", "-", "-", "-", "-"
         maestro_res, maestro_ddG, maestro_conf, seq_len = "-", "-", "-", "-"
 
-        if not mut_num:
+        if mut_num:
             fx_res = "Not valid"
 
-        elif mut_param and (mut_nums == "All" or (int(mut_num) in mut_nums)):
-            proc_print("Mutation number:", mut_num)
+            if (mut_nums == "All" or (int(mut_num) in mut_nums)):
+                if mut_param:
+                    proc_print("Mutation number:", mut_num)
         
-        #FoldX
-            fx_res, fx_time, fx_ddG, fx_ddG_R = foldx(mut_param, pdb_folder, foldx_path, n)
-            proc_print("FoldX ", mut_param["No"], ": ", fx_res, fx_time, fx_ddG, fx_ddG_R)
-            if fx_res == "Ok":
+                #FoldX
+                    fx_res, fx_time, fx_ddG = foldx(mut_param, pdb_folder, foldx_path, n)
+                    proc_print("FoldX ", mut_param["No"], ": ", fx_res, fx_time, fx_ddG)
+                if fx_res == "Ok":
 
-        # Eris
-                er_res, er_time, er_ddG = eris(mut_param, pdb_folder, eris_path)
-                proc_print("Eris ", mut_param["No"], ": ", er_res, er_time, er_ddG)
+                # Eris
+                   # er_res, er_time, er_ddG = eris(mut_param, pdb_folder, eris_path)
+                   # proc_print("Eris ", mut_param["No"], ": ", er_res, er_time, er_ddG)
         
-        # I-MUTANT
-                imut, imut_time, imut_sign, imut_ddG, imut_RI = imutant(mut_param, pdb_folder)
-                proc_print("I-MUTANT ", mut_param["No"], ": ", imut, imut_time, imut_sign, imut_ddG, imut_RI)
+                # I-MUTANT
+                    imut, imut_time, imut_sign, imut_ddG, imut_RI = imutant(mut_param, pdb_folder)
+                    proc_print("I-MUTANT ", mut_param["No"], ": ", imut, imut_time, imut_sign, imut_ddG, imut_RI)
 
-        # MAESTRO
-                maestro_res, maestro_ddG, maestro_conf, seq_len = maestro(mut_param, pdb_folder)
-                proc_print("MAESTRO ", mut_param["No"], ": ", maestro, maestro_ddG, maestro_conf) 
-            if fx_res != 'Wrong residue':
-        #    if fx_res:
-                res = res_template % (fx_res, fx_time, fx_ddG, fx_ddG_R, er_res, er_time, er_ddG, imut, imut_time, imut_sign, imut_ddG, imut_RI, 
-                                  maestro_res, maestro_ddG, maestro_conf, seq_len)
-                res_csv.write(mut.strip() + "," + res)
+                # MAESTRO
+                    maestro_res, maestro_ddG, maestro_conf, seq_len = maestro(mut_param, pdb_folder)
+                    proc_print("MAESTRO ", mut_param["No"], ": ", maestro, maestro_ddG, maestro_conf) 
+                if fx_res != 'Wrong residue':
+            
+                    res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG, imut, imut_time, imut_sign, imut_ddG, imut_RI, 
+                                          maestro_res, maestro_ddG, maestro_conf, seq_len)
+                    res_csv.write(mut.strip() + "," + res)
 
 
     # os.system("mv " + "eris_results.txt" + " " + eris_path)
