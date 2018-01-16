@@ -20,7 +20,17 @@ necessary_keys = ("ENTRY", "CHANGE-POINT", "STABILITY", "FUNCTION", "STRUCTURE",
                   "PROTEIN", "SOURCE", "N-TERMINAL", "PROTEIN-SEQUENCE",
                   "EXPRESSION-SYSTEM")
 
-half_keys = ("-POINT", "-DELETE", "-REPLACE", "STOP")
+stability_keys = ("STRUCTURE/STABILITY", "STABILITY/STRUCTURE",
+                  "TRANSPORT/STABILITY", "STABILITY/TRANSPORT",
+                  "EXPRESSION/STABILITY", "STABILITY/EXPRESSION",
+                  "STABILITY")
+
+half_keys = ("-POINT", "-DELETE", "-REPLACE", "-STOP")
+
+delimiters = ('CROSS-REFERENCE', 'CHANGE-POINT', 'CHANGE-INSERT',
+              'CHANGE-FRAME', 'CHANGE-DELETE', 'CHANGE-EXTEND',
+              'CHANGE-MODIFY', 'CHANGE-FRAGMENT', 'CHANGE-STOP',
+              'CHANGE-REPLACE')
 
 
 def open_database(argv):
@@ -51,7 +61,18 @@ def open_output(argv):
 
 def dump(experiment, output):
     global necessary_keys
+    global stability_keys
+
     experiment = {key: value for (key, value) in experiment}
+
+    # Get all information about stability into STABILITY field
+    stability = ''
+    for key in stability_keys:
+        if key in experiment.keys():
+            stability += ' ' + experiment[key]
+    if stability:
+        experiment['STABILITY'] = stability
+
     if 'CHANGE-POINT' in experiment.keys() and 'STABILITY' in experiment.keys():
         result = ''
         for key in necessary_keys:
@@ -65,11 +86,8 @@ def dump(experiment, output):
 
 
 def split_into_experiments(block, output):
+    global delimiters
     experiment = []  # stack
-    delimiters = ('CROSS-REFERENCE', 'CHANGE-POINT', 'CHANGE-INSERT',
-                  'CHANGE-FRAME', 'CHANGE-DELETE', 'CHANGE-EXTEND',
-                  'CHANGE-MODIFY', 'CHANGE-FRAGMENT', 'CHANGE-STOP',
-                  'CHANGE-REPLACE')
     head_read = 0
     for prop in block:
         print("head_read", head_read)
@@ -83,7 +101,7 @@ def split_into_experiments(block, output):
             experiment.pop()
             if prop[0] == 'CROSS-REFERENCE':
                 head_read = 0
-        elif prop[0] in delimiters and head_read == 0:
+        elif prop[0] in delimiters and head_read == 0 and prop[0] != 'CROSS-REFERENCE':
             head_read = 1
         experiment.append(prop)
     dump(experiment, output)
@@ -110,7 +128,6 @@ def read_block(database, output):
                     print(half_key)
                     cur_line = cur_line.split(None, 1)
                     print(cur_line)
-                    #block.append([cur_line[0], cur_line[1]])
                     block[-1][1] += '; ' + cur_line[1].strip()
             if not half_key:
                 block[-1][1] += ' ' + cur_line.strip()
@@ -137,8 +154,6 @@ def parse_database(database, output):
     output.write(s.join(necessary_keys) + "\n")
     block = read_block(database, output)
     while block:
-    #     row = [block[p] for p in properties]
-    #     output.write(s.join(row) + "\n")
         block = read_block(database, output)
 
 
@@ -147,32 +162,7 @@ def main(argv):
     output = open_output(argv)
 
     parse_database(database, output)
- #   line = database.readline()
- #   n = 0
- #   while line:
- #        stability_experiment = 0
- #        point_mutation = 0
- #        if line.startswith('ENTRY'):
- #            block = []
- #            block.append(line)
- #            line = database.readline()
- #            while line and not line.startswith('///'):
- #                block.append(line)
- #                if 'STABILITY' in line:
- #                    stability_experiment += 1
- #                if 'CHANGE-POINT' in line:
- #                    point_mutation += 1
- #                line = database.readline()
- #            block.append("///\n")
- #        if stability_experiment and point_mutation:
- #            n += 1
- #            for l in block:
- #                output.write(l)
- #            stability_experiment = 0
- #            point_mutation = 0
- #        line = database.readline()
 
-    # print(n)
     database.close()
     output.close()
 
