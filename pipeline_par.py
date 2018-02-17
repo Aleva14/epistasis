@@ -320,6 +320,41 @@ def maestro(mut_param, pdb_folder):
     return "Ok", maestro_ddG, maestro_conf, maestro_len
 
 
+def strum(mut_param, pdb_folder):
+    # make fasta file of necessary chain
+    # command = "/home/buglakova/epistasis/pdb-tools/pdb_selchain.py -A | /home/buglakova/epistasis/pdb-tools/pdb_toseq.py > 1brs_A.fasta"
+    command = "/home/buglakova/epistasis/pdb-tools/pdb_selchain.py %s -%s | /home/buglakova/epistasis/pdb-tools/pdb_toseq.py > %s.fasta"
+    pdb_path = os.path.join(pdb_folder, mut_param["PDB"])
+    pdb_parse_command = command % (pdb_path + ".pdb", mut_param['CHAIN'], pdb_path)
+
+    # command = "/usr/local/share/STRUM/runSTRUM.pl -datadir /home/buglakova/example -pdb 1arrA.pdb -mutation S35G"
+    command = "/usr/local/share/STRUM/runSTRUM.pl -datadir %s -pdb %s -mutation %s"
+
+    pdb_path = os.path.join(pdb_folder, mut_param["PDB"] + ".pdb")
+    maestro_command = command % (pdb_path, mut_param['AA1'], mut_param['POS'], mut_param['CHAIN'], mut_param['AA2'])
+    proc_print(maestro_command)
+    proc = subprocess.Popen(maestro_command,
+                            shell=True,
+                            universal_newlines=True,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
+    try:
+        maestro_out, errs = proc.communicate(timeout=3600)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        return "timeout", '-', '-', '-'
+    if "ERROR" in errs:
+        return "error", '-', '-', '-'
+    maestro_out = maestro_out.strip().split("\n")[2]
+    maestro_out = maestro_out.split()
+    maestro_ddG = maestro_out[5]
+    maestro_conf = maestro_out[6]
+    maestro_len = maestro_out[1]
+
+    return "Ok", maestro_ddG, maestro_conf, maestro_len
+
+
+
 def main():
     global AA
     #Parse command line arguments
