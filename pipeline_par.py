@@ -73,7 +73,7 @@ def foldx(mut_param, pdb_folder, foldx_path, n):
     global AA
 
     #FoldX command for BuildModel option. individual_list.txt - file with list of mutations.
-    foldx_command = "foldx --command=BuildModel --pdb-dir=%s --pdb=%s --mutant-file=individual_list" + str(n) + ".txt --output-dir=%s --numberOfRuns=10 --out-pdb=false"
+    foldx_command = "foldx --command=BuildModel --pdb-dir=%s --pdb=%s --mutant-file=individual_list" + str(n) + ".txt --output-dir=%s --numberOfRuns=1 --out-pdb=false"
 
     #Create directory to save output files of FoldX separately for each mutation
     proc_print(mut_param is None)
@@ -320,38 +320,74 @@ def maestro(mut_param, pdb_folder):
     return "Ok", maestro_ddG, maestro_conf, maestro_len
 
 
-def strum(mut_param, pdb_folder):
-    # make fasta file of necessary chain
-    # command = "/home/buglakova/epistasis/pdb-tools/pdb_selchain.py -A | /home/buglakova/epistasis/pdb-tools/pdb_toseq.py > 1brs_A.fasta"
-    command = "/home/buglakova/epistasis/pdb-tools/pdb_selchain.py %s -%s | /home/buglakova/epistasis/pdb-tools/pdb_toseq.py > %s.fasta"
-    pdb_path = os.path.join(pdb_folder, mut_param["PDB"])
-    pdb_parse_command = command % (pdb_path + ".pdb", mut_param['CHAIN'], pdb_path)
+# Renumber aminoacids
+def strum_number(pdb_name, aa, n, ch):
+    pdb = open(pdb_name, 'r')
+    print(aa, n, ch)
+    cur_aa = ''
+    cur_pdb_n = 0
+    cur_ch = ''
+    cur_n = 1 # counting number of aa in pdb 
+
+    for line in pdb:
+        if line.startswith('ATOM'):
+            l_aa = line[17:21].strip()
+            l_ch = line[21:23].strip()
+            l_n = int(line[23:30])
+            # print(l_aa, l_ch, l_n)
+            if (cur_aa, cur_ch, cur_pdb_n) != (l_aa, l_ch, l_n):
+                (cur_aa, cur_ch, cur_pdb_n) = (l_aa, l_ch, l_n)
+                cur_n += 1
+            if (cur_aa, cur_ch, cur_pdb_n) == (aa, ch, n):
+                return cur_n - 1
+    return n
+
+
+def strum(mut_param, pdb_folder, tmp_path):
+    global AA
+    # Extract only one chain from pdb
+    atoms = prody.parsePDB(pdb_folder + "/" + mut_param["PDB"] + ".pdb", chain=mut_param["CHAIN"])
+    pdb_name = mut_param["PDB"] + mut_param["CHAIN"] + ".pdb"
+    prody.writePDB(pdb_name, atoms)
+    print(pdb_name)
 
     # command = "/usr/local/share/STRUM/runSTRUM.pl -datadir /home/buglakova/example -pdb 1arrA.pdb -mutation S35G"
-    command = "/usr/local/share/STRUM/runSTRUM.pl -datadir %s -pdb %s -mutation %s"
+    command = "time /usr/local/share/STRUM/runSTRUM.pl -datadir %s -pdb %s -mutation %s"
 
-    pdb_path = os.path.join(pdb_folder, mut_param["PDB"] + ".pdb")
-    maestro_command = command % (pdb_path, mut_param['AA1'], mut_param['POS'], mut_param['CHAIN'], mut_param['AA2'])
-    proc_print(maestro_command)
-    proc = subprocess.Popen(maestro_command,
+    strum_pos = str(strum_number(pdb_name, AA[mut_param['AA1']], int(mut_param['POS']), mut_param['CHAIN']))
+    strum_command = command % (tmp_path, pdb_name, mut_param['AA1'] + strum_pos + mut_param['AA2'])
+    proc_print(strum_command)
+    proc = subprocess.Popen(strum_command,
                             shell=True,
                             universal_newlines=True,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
     try:
-        maestro_out, errs = proc.communicate(timeout=3600)
+        strum_out, errs = proc.communicate(timeout=3600)
     except subprocess.TimeoutExpired:
         proc.kill()
-        return "timeout", '-', '-', '-'
+        return "timeout", '-', '-'
     if "ERROR" in errs:
-        return "error", '-', '-', '-'
-    maestro_out = maestro_out.strip().split("\n")[2]
-    maestro_out = maestro_out.split()
-    maestro_ddG = maestro_out[5]
-    maestro_conf = maestro_out[6]
-    maestro_len = maestro_out[1]
+        return "error", '-', '-'
 
-    return "Ok", maestro_ddG, maestro_conf, maestro_len
+    print(errs)
+    strum_out = strum_out.strip().split("\n")
+    for line in strum_out:
+        print(line)
+        if line.startswith('# ') and (mut_param["PDB"] in line):
+            line = line.split()
+            print(line)
+            if len(line) >= 6:
+                strum_ddG = line[5]
+            else:
+                strum_ddG = '-'
+    strum_time = ''
+    errs = errs.strip().split("\n")
+    for line in errs:
+        if line.startswith("real"):
+            strum_time = line.split()[-1]
+
+    return "Ok", strum_ddG, time_to_sec(strum_time)
 
 
 
@@ -407,9 +443,10 @@ def main():
     eris_path = os.path.join(path, "Eris")
     create_dir(eris_path)
 
-    #Change working directory into /tmp 
-    create_dir("/tmp/mc-buglakova/" + str(os.getpid()))
-    os.chdir("/tmp/mc-buglakova/" + str(os.getpid()))
+    #Change working directory into /tmp
+    tmp_path = "/tmp/mc-buglakova/" + str(os.getpid()) 
+    create_dir(tmp_path)
+    os.chdir(tmp_path)
 
     #Create symlink to rotabase.txt (necessary for FoldX)
     try:
@@ -437,7 +474,7 @@ def main():
     result_path = os.path.join(path, "result.tsv")
 
     if nproc == 1:
-        main_loop(result_path, foldx_path, eris_path, pdb_folder_path, mutations_path, mut_nums)
+        main_loop(result_path, foldx_path, eris_path, pdb_folder_path, mutations_path, mut_nums, tmp_path)
     else:
         procs = []
         result_files = ["result" + str(i) + ".tsv" for i in range(nproc)]
@@ -455,7 +492,7 @@ def main():
         for i in range(nproc):
             i_res_path = "result" + str(i) + ".tsv"
             i_mut_nums = mut_nums[n_per_proc * i : min(len(mut_nums), n_per_proc * (i + 1))] 
-            proc = mp.Process(target = main_loop, args = (result_files[i], foldx_path, eris_path, pdb_folder_path, mutations_path, i_mut_nums))
+            proc = mp.Process(target = main_loop, args = (result_files[i], foldx_path, eris_path, pdb_folder_path, mutations_path, i_mut_nums, tmp_path))
             procs.append(proc)
             proc.start() 
         for proc in procs:
@@ -471,7 +508,7 @@ def main():
                             file.write(line)
 
 
-def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mut_nums):
+def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mut_nums, tmp_path):
     print(mut_nums)
     try:
         mutations = open(mutations_path, 'r')
@@ -491,8 +528,8 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
     else:
         proc_print("Created " + result_path)
 
-    res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,Eris,Eris_time,Eris_ddG,iMut,iMut_time,iMut_sign,iMut_ddg,iMut_RI,M,M_ddG,M_conf,LEN\n"
-    res_template = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n"
+    res_fields = mutations.readline().strip() + ",FX,FX_time,FX_ddG,Eris,Eris_time,Eris_ddG,iMut,iMut_time,iMut_sign,iMut_ddg,iMut_RI,M,M_ddG,M_conf,LEN,S,S_ddG,S_time\n"
+    res_template = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%s,%s,%s\n"
     res_csv.write(res_fields)
 
     #Main loop
@@ -503,6 +540,7 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
         er_res, er_time, er_ddG = "-", "-", "-"
         imut, imut_time, imut_sign, imut_RI, imut_ddG = "-", "-", "-", "-", "-"
         maestro_res, maestro_ddG, maestro_conf, seq_len = "-", "-", "-", "-"
+        strum_res, strum_ddG, strum_time = "-", "-", "-"
 
         if mut_num:
             fx_res = "Not valid"
@@ -521,17 +559,21 @@ def main_loop(result_path, foldx_path, eris_path, pdb_folder, mutations_path, mu
                    # proc_print("Eris ", mut_param["No"], ": ", er_res, er_time, er_ddG)
         
                 # I-MUTANT
-                    imut, imut_time, imut_sign, imut_ddG, imut_RI = imutant(mut_param, pdb_folder)
-                    proc_print("I-MUTANT ", mut_param["No"], ": ", imut, imut_time, imut_sign, imut_ddG, imut_RI)
+                  #  imut, imut_time, imut_sign, imut_ddG, imut_RI = imutant(mut_param, pdb_folder)
+                  #  proc_print("I-MUTANT ", mut_param["No"], ": ", imut, imut_time, imut_sign, imut_ddG, imut_RI)
 
                 # MAESTRO
-                    maestro_res, maestro_ddG, maestro_conf, seq_len = maestro(mut_param, pdb_folder)
-                    proc_print("MAESTRO ", mut_param["No"], ": ", maestro, maestro_ddG, maestro_conf) 
-                if fx_res != 'Wrong residue':
+                  #  maestro_res, maestro_ddG, maestro_conf, seq_len = maestro(mut_param, pdb_folder)
+                  #  proc_print("MAESTRO ", mut_param["No"], ": ", maestro, maestro_ddG, maestro_conf)
+
+                 # STRUM
+                    strum_res, strum_ddG, strum_time = strum(mut_param, pdb_folder, tmp_path)
+                    proc_print("MAESTRO ", mut_param["No"], ": ", maestro, maestro_ddG, maestro_conf)
+               # if fx_res != 'Wrong residue':
             
-                    res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG, imut, imut_time, imut_sign, imut_ddG, imut_RI, 
-                                          maestro_res, maestro_ddG, maestro_conf, seq_len)
-                    res_csv.write(mut.strip() + "," + res)
+            res = res_template % (fx_res, fx_time, fx_ddG, er_res, er_time, er_ddG, imut, imut_time, imut_sign, imut_ddG, imut_RI, 
+                                  maestro_res, maestro_ddG, maestro_conf, seq_len, strum_res, strum_ddG, strum_time)
+            res_csv.write(mut.strip() + "," + res)
 
 
     # os.system("mv " + "eris_results.txt" + " " + eris_path)
